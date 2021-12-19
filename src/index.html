@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Test</title>
+	<script type="text/javascript">
+		
+		var apiURL = ""; //insert after terraform deployment 
+
+		function sendGetRequest() {
+			document.getElementById("response").value="";  //clears text area 
+			httpGet(apiURL + "?firstName" + encodeURI(document.getElementById("firstName").value)
+			+ "&lastName=" + encodeURI(document.getElementById("lastName").value));	
+		}
+
+		function sendPostRequest() {
+			document.getElementById("response").value = "";
+			data = {
+				"firstName": document.getElementById("firstName").value,
+				"lastName": document.getElementById("lastName").value
+			}
+			data = JSON.stringify(data)
+			console.log("POST:" + apiURL + " DATA: " + data);
+			var request = new XMLHttpRequest();
+			request.open("POST", apiUrl);
+			request.onload = ()=>{
+				processResponse(request);
+			}
+			request.send(data);
+		}
+
+		function httpGet(theUrl) {
+			console.log("GET: " + theUrl);
+			var request = new XMLHttpRequest();
+			request.open( "GET", theUrl);
+			request.send( null );
+			request.onload = ()=>{
+				processResponse(request);
+			}
+		}	
+
+		function processResponse(request) {
+			console.log(request);
+			if(request.status == 200) {
+				console.log(JSON.parse(request.response));
+				document.getElementById("response").value = JSON.stringify(JSON.parse(request,response), null, 2);
+			}
+		}	
+	</script>
+</head>
+<body>
+
+<div align="center">
+	<table>
+		<tr> 
+			<td>First Name</td>
+			<td><input type="text" id="firstName" placeholder="First Name"></td>
+			<td>Last Name</td>
+			<td><input type="text" id="lastName" placeholder="Last Name"></td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+				<input type="button" value="(SEND GET)" onclick="sendGetRequest()" >
+				<input type="button" value="(SEND POST)" onclick="sendPostRequest()" >
+			</td>
+		</tr>
+	</table>	
+	
+	<br><br>
+	<textarea id="response" style="width: 700px; height: 500px"></textarea>
+</div>
+
+</body>
+</html>
